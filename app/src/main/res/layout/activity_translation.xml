@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_height="match_parent"
+     android:layout_width="match_parent"
+     android:padding="10dp">
+
+    <FrameLayout
+         android:layout_height="match_parent"
+         android:layout_width="match_parent"
+         android:background="#CCCCCC"
+         android:id="@+id/cameraPreview">
+
+        <Button
+             android:layout_height="wrap_content"
+             android:layout_width="wrap_content"
+             android:layout_margin="8dp"
+             android:layout_alignParentLeft="true"
+             android:layout_alignParentBottom="true"
+             android:id="@+id/backBtn"
+             android:text="←" />
+
+    </FrameLayout>
+
+    <TextView
+         android:layout_height="wrap_content"
+         android:layout_width="wrap_content"
+         android:background="#AA000000"
+         android:padding="8dp"
+         android:layout_margin="8dp"
+         android:textColor="#FFFFFF"
+         android:layout_alignParentBottom="true"
+         android:id="@+id/captions"
+         android:text="Captions here..." />
+
+    <Button
+         android:layout_height="wrap_content"
+         android:layout_width="wrap_content"
+         android:layout_margin="8dp"
+         android:layout_alignParentRight="true"
+         android:layout_alignParentBottom="true"
+         android:id="@+id/soundBtn"
+         android:text="🔊" />
+
+    <Button
+         android:layout_height="wrap_content"
+         android:layout_width="wrap_content"
+         android:layout_margin="8dp"
+         android:layout_alignParentRight="true"
+         android:layout_alignParentTop="true"
+         android:id="@+id/saveHistoryBtn"
+         android:text="Save" />
+
+</RelativeLayout>
