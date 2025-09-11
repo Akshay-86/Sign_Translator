@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp">
@@ -14,32 +15,47 @@
         <ImageView
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:src="@mipmap/ic_launcher"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/voxlogo"
+            tools:srcCompat="@drawable/voxlogo" />
 
         <Button
             android:id="@+id/signToTextBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign to Text" />
+            android:text="Sign to Text"
+            android:textColor="@android:color/holo_purple"
+            android:backgroundTint="#E6E6FA"
+            android:layout_margin="8dp"/>
 
         <Button
             android:id="@+id/signToSpeechBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign to Speech" />
+            android:text="Sign to Speech"
+            android:textColor="@android:color/holo_purple"
+            android:backgroundTint="#E6E6FA"
+            android:layout_margin="8dp"/>
 
         <Button
             android:id="@+id/textToSignBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Text to Sign" />
+            android:text="Text to Sign"
+
+            android:textColor="@android:color/holo_purple"
+            android:backgroundTint="#E6E6FA"
+            android:layout_margin="8dp"/>
+
 
         <Button
             android:id="@+id/speechToSignBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Speech to Sign" />
+            android:text="Speech to Sign"
+            android:textColor="@android:color/holo_purple"
+            android:backgroundTint="#E6E6FA"
+            android:layout_margin="8dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,14 +68,20 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Learn" />
+                android:text="Learn"
+                android:textColor="@android:color/black"
+                android:backgroundTint="#E6E6FA"
+                android:layout_margin="8dp"/>
 
             <Button
                 android:id="@+id/historyBtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="History" />
+                android:text="History"
+                android:textColor="@android:color/black"
+                android:backgroundTint="#E6E6FA"
+                android:layout_margin="8dp"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

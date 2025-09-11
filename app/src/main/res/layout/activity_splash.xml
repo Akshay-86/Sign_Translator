@@ -7,11 +7,10 @@
      android:background="#FFFFFF">
 
     <ImageView
-         android:layout_height="100dp"
-         android:layout_width="100dp"
-         android:layout_centerInParent="true"
-         android:src="@mipmap/ic_launcher"
-         android:id="@+id/logo" />
+        android:id="@+id/logo"
+        android:layout_width="372dp"
+        android:layout_height="323dp"
+        android:src="@drawable/voxlogo2" />
 
     <TextView
          android:layout_height="wrap_content"
@@ -19,8 +18,8 @@
          android:layout_below="@id/logo"
          android:textSize="24sp"
          android:layout_centerHorizontal="true"
-         android:layout_marginTop="20dp"
-         android:text="VOX IGNOTA"
-         android:textStyle="bold" />
+         android:layout_marginTop="20dp"/>
+
+
 
 </RelativeLayout>
