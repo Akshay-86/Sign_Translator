@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#CCCCCC">
+
+
     </androidx.camera.view.PreviewView>
 
     <ImageButton
@@ -36,10 +38,19 @@
          android:text="Captions here..." />
 
     <Button
+        android:id="@+id/toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/soundBtn"
+        android:layout_margin="8dp"
+        android:layout_alignParentEnd="true"
+        android:text="🔀" />
+
+    <Button
          android:layout_height="wrap_content"
          android:layout_width="wrap_content"
          android:layout_margin="8dp"
-         android:layout_alignParentRight="true"
+         android:layout_alignParentEnd="true"
          android:layout_alignParentBottom="true"
          android:id="@+id/soundBtn"
          android:text="🔊" />
@@ -48,7 +59,7 @@
          android:layout_height="wrap_content"
          android:layout_width="wrap_content"
          android:layout_margin="8dp"
-         android:layout_alignParentRight="true"
+         android:layout_alignParentEnd="true"
          android:layout_alignParentTop="true"
          android:id="@+id/saveHistoryBtn"
          android:text="Save" />
