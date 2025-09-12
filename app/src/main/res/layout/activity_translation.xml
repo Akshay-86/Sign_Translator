@@ -5,39 +5,52 @@
      android:layout_width="match_parent"
      android:padding="10dp">
 
-    <FrameLayout
-         android:layout_height="match_parent"
-         android:layout_width="match_parent"
-         android:background="#CCCCCC"
-         android:id="@+id/cameraPreview">
 
-        <Button
-             android:layout_height="wrap_content"
-             android:layout_width="wrap_content"
-             android:layout_margin="8dp"
-             android:layout_alignParentLeft="true"
-             android:layout_alignParentBottom="true"
-             android:id="@+id/backBtn"
-             android:text="←" />
+    <androidx.camera.view.PreviewView
+        android:id="@+id/cameraPreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CCCCCC">
 
-    </FrameLayout>
+
+    </androidx.camera.view.PreviewView>
+
+    <ImageButton
+        android:id="@+id/backBtn"
+        android:layout_width="85dp"
+        android:layout_height="50dp"
+        android:layout_margin="8dp"
+        android:contentDescription="goHome"
+        android:onClick="goHome"
+        android:src="@drawable/ic_home"
+        android:text="←" />
 
     <TextView
-         android:layout_height="wrap_content"
-         android:layout_width="wrap_content"
+         android:layout_height="44dp"
+         android:layout_width="250dp"
          android:background="#AA000000"
          android:padding="8dp"
          android:layout_margin="8dp"
+         android:layout_marginBottom="12dp"
          android:textColor="#FFFFFF"
          android:layout_alignParentBottom="true"
          android:id="@+id/captions"
          android:text="Captions here..." />
 
     <Button
+        android:id="@+id/toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/soundBtn"
+        android:layout_margin="8dp"
+        android:layout_alignParentEnd="true"
+        android:text="🔀" />
+
+    <Button
          android:layout_height="wrap_content"
          android:layout_width="wrap_content"
          android:layout_margin="8dp"
-         android:layout_alignParentRight="true"
+         android:layout_alignParentEnd="true"
          android:layout_alignParentBottom="true"
          android:id="@+id/soundBtn"
          android:text="🔊" />
@@ -46,7 +59,7 @@
          android:layout_height="wrap_content"
          android:layout_width="wrap_content"
          android:layout_margin="8dp"
-         android:layout_alignParentRight="true"
+         android:layout_alignParentEnd="true"
          android:layout_alignParentTop="true"
          android:id="@+id/saveHistoryBtn"
          android:text="Save" />
