@@ -1,10 +1,12 @@
 package com.example.voxignota;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraInfoUnavailableException;
@@ -14,6 +16,12 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import com.google.common.util.concurrent.ListenableFuture;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 public class TranslationActivity extends AppCompatActivity {
@@ -23,6 +31,8 @@ public class TranslationActivity extends AppCompatActivity {
     private ProcessCameraProvider cameraProvider;
     private CameraSelector cameraSelector;
     private Preview preview;
+    private EditText captions;
+    private Button saveHistoryBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +41,9 @@ public class TranslationActivity extends AppCompatActivity {
 
         previewView = findViewById(R.id.cameraPreview);
         Button toggleButton = findViewById(R.id.toggle);
+        captions = findViewById(R.id.captions);
+        saveHistoryBtn = findViewById(R.id.saveHistoryBtn);
+
 
         // Initialize to default back camera
         cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
@@ -86,6 +99,23 @@ public class TranslationActivity extends AppCompatActivity {
             bindCameraUseCases();
             //updateToggleButtonText();
         });
+
+        saveHistoryBtn.setOnClickListener(v -> {
+            String textToSave = captions.getText().toString();
+            if (!textToSave.isEmpty()) {
+                saveToHistory(textToSave);
+            }
+        });
+    }
+
+    private void saveToHistory(String text) {
+        SharedPreferences prefs = getSharedPreferences("history", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        Set<String> historySet = prefs.getStringSet("history_set", new HashSet<>());
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        historySet.add(text + " (" + timestamp + ")");
+        editor.putStringSet("history_set", historySet);
+        editor.apply();
     }
 
     private void bindCameraUseCases() {
