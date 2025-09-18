@@ -1,10 +1,13 @@
 package com.example.voxignota;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraInfoUnavailableException;
@@ -13,7 +16,9 @@ import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
+
 import com.google.common.util.concurrent.ListenableFuture;
+
 import java.util.concurrent.ExecutionException;
 
 public class TranslationActivity extends AppCompatActivity {
@@ -23,6 +28,8 @@ public class TranslationActivity extends AppCompatActivity {
     private ProcessCameraProvider cameraProvider;
     private CameraSelector cameraSelector;
     private Preview preview;
+    private EditText captions;
+    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +38,10 @@ public class TranslationActivity extends AppCompatActivity {
 
         previewView = findViewById(R.id.cameraPreview);
         Button toggleButton = findViewById(R.id.toggle);
+        captions = findViewById(R.id.captions);
+        Button saveHistoryBtn = findViewById(R.id.saveHistoryBtn);
+
+        db = AppDatabase.getDatabase(this);
 
         // Initialize to default back camera
         cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
@@ -51,7 +62,6 @@ public class TranslationActivity extends AppCompatActivity {
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
                 bindCameraUseCases();
-                //updateToggleButtonText();
 
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error initializing camera provider", e);
@@ -75,7 +85,6 @@ public class TranslationActivity extends AppCompatActivity {
                         Log.w(TAG, "Front camera is not available.");
                         // Revert to back camera if front is not available
                         cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
-                         // Optionally, inform the user e.g. via a Toast
                     }
                 } catch (CameraInfoUnavailableException e) {
                     throw new RuntimeException(e);
@@ -84,8 +93,29 @@ public class TranslationActivity extends AppCompatActivity {
                 cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
             }
             bindCameraUseCases();
-            //updateToggleButtonText();
         });
+
+        saveHistoryBtn.setOnClickListener(v -> {
+            String textToSave = captions.getText().toString();
+            if (!textToSave.isEmpty()) {
+                saveToHistory(textToSave);
+            }
+        });
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private void saveToHistory(String text) {
+        HistoryItem historyItem = new HistoryItem();
+        historyItem.text = text;
+        historyItem.timestamp = System.currentTimeMillis();
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                db.historyDao().insert(historyItem);
+                return null;
+            }
+        }.execute();
     }
 
     private void bindCameraUseCases() {
@@ -104,14 +134,6 @@ public class TranslationActivity extends AppCompatActivity {
             Log.e(TAG, "Error binding camera use cases", e);
         }
     }
-
-/*    private void updateToggleButtonText() {
-        if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-            toggleButton.setText("Switch to Front");
-        } else {
-            toggleButton.setText("Switch to Back");
-        }
-    }*/
 
     public void goHome(View v){
         // Unbind camera before leaving activity to release resources
