@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:background="#E6E6FA">
+
+    <ImageButton
+        android:id="@+id/roundButton"
+        android:layout_width="40dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_home_round"
+        android:background="@drawable/round_button"
+        android:scaleType="centerInside"
+        android:padding="1dp"
+        android:contentDescription="Home"/>
+<ListView
+    android:id="@+id/learnList"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#E6E6FA"
+    android:padding="16dp"
+    android:textColor="@android:color/holo_purple"
+    />
+    </LinearLayout>
