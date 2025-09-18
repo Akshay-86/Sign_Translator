@@ -1,70 +1,46 @@
 package com.example.voxignota;
 
-import android.annotation.SuppressLint;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.SimpleDateFormat;
+
+
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
 
 public class HistoryActivity extends AppCompatActivity {
-
-    private AppDatabase db;
-    private HistoryAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        db = AppDatabase.getDatabase(this);
+        String[] itemslist = {"ITEM 1","ITEM 2","ITEM 3","ITEM 4","ITEM 5","ITEM 6","ITEM 7","ITEM 8","ITEM 9","ITEM 10","ITEM 11","ITEM 12","ITEM 13","ITEM 14","ITEM 15","ITEM 16","ITEM 17","ITEM 18","ITEM 19","ITEM 20"};
+        ListView listView = findViewById(R.id.historyList);
+        listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, itemslist));
 
-        RecyclerView recyclerView = findViewById(R.id.historyRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new HistoryAdapter(new HashMap<>());
-        recyclerView.setAdapter(adapter);
+        ImageButton roundButton = findViewById(R.id.roundButton);
 
-        loadHistory();
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private void loadHistory() {
-        new AsyncTask<Void, Void, List<HistoryItem>>() {
+        roundButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            protected List<HistoryItem> doInBackground(Void... voids) {
-                return db.historyDao().getAll();
+            public void onClick(View view) {
+                Intent intent = new Intent(HistoryActivity.this, HomeActivity.class);
+                // Optional: clear the back stack if you don't want to return here on back press
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish(); // optional: closes the translation activity
             }
 
-            @Override
-            protected void onPostExecute(List<HistoryItem> historyItems) {
-                if (historyItems != null) {
-                    Map<String, List<HistoryItem>> groupedByDate = groupHistoryByDate(historyItems);
-                    adapter.setItems(groupedByDate);
-                }
+            private void startActivity(Intent intent) {
             }
-        }.execute();
+        });
     }
 
-    private Map<String, List<HistoryItem>> groupHistoryByDate(List<HistoryItem> historyItems) {
-        Map<String, List<HistoryItem>> grouped = new HashMap<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        for (HistoryItem item : historyItems) {
-            String date = sdf.format(new Date(item.timestamp));
-            if (!grouped.containsKey(date)) {
-                grouped.put(date, new ArrayList<>());
-            }
-            Objects.requireNonNull(grouped.get(date)).add(item);
-        }
-        return grouped;
-    }
 }

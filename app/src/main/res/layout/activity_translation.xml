@@ -3,65 +3,67 @@
      xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_height="match_parent"
      android:layout_width="match_parent"
-     android:padding="10dp">
+     android:padding="10dp"
+     android:background="#E6E6FA">
 
 
-    <androidx.camera.view.PreviewView
+
+    <FrameLayout
         android:id="@+id/cameraPreview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#CCCCCC">
+        android:layout_height="match_parent">
 
 
-    </androidx.camera.view.PreviewView>
+        <ImageButton
+            android:id="@+id/roundButton"
+            android:layout_width="40dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_home_round"
+            android:background="@drawable/round_button"
+            android:scaleType="centerInside"
+            android:padding="1dp"
+            android:contentDescription="Home"/>
 
-    <ImageButton
-        android:id="@+id/backBtn"
-        android:layout_width="85dp"
-        android:layout_height="50dp"
-        android:layout_margin="8dp"
-        android:contentDescription="goHome"
-        android:onClick="goHome"
-        android:src="@drawable/ic_home"
-        android:text="←" />
 
-    <EditText
-         android:layout_height="44dp"
-         android:layout_width="250dp"
-         android:background="#AA000000"
-         android:padding="8dp"
-         android:layout_margin="8dp"
-         android:layout_marginBottom="12dp"
-         android:textColor="#FFFFFF"
-         android:layout_alignParentBottom="true"
-         android:id="@+id/captions"
-         android:text="Captions here..." />
+    </FrameLayout>
 
-    <Button
-        android:id="@+id/toggle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/soundBtn"
-        android:layout_margin="8dp"
-        android:layout_alignParentEnd="true"
-        android:text="🔀" />
+    <TextView
+        android:id="@+id/captions"
+        android:layout_width="274dp"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="#AA000000"
+        android:backgroundTint="#800080"
+        android:padding="8dp"
+        android:text="Captions here..."
+        android:textColor="#FFFFFF" />
 
     <Button
          android:layout_height="wrap_content"
          android:layout_width="wrap_content"
          android:layout_margin="8dp"
-         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
          android:layout_alignParentBottom="true"
          android:id="@+id/soundBtn"
-         android:text="🔊" />
+         android:text="🔊"
+        android:textColor="#800080"
+        android:backgroundTint="#FFFFFF" />
 
     <Button
          android:layout_height="wrap_content"
          android:layout_width="wrap_content"
          android:layout_margin="8dp"
-         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
          android:layout_alignParentTop="true"
          android:id="@+id/saveHistoryBtn"
-         android:text="Save" />
+         android:text="Save"
+         android:textColor="#800080"
+        android:backgroundTint="#FFFFFF"/>
 
 </RelativeLayout>
