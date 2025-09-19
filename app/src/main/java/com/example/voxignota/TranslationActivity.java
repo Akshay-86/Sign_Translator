@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,9 +20,10 @@ import androidx.core.content.ContextCompat;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-public class TranslationActivity extends AppCompatActivity {
+public class TranslationActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
     private static final String TAG = "TranslationActivity";
     private PreviewView previewView;
@@ -30,6 +32,8 @@ public class TranslationActivity extends AppCompatActivity {
     private Preview preview;
     private EditText captions;
     private AppDatabase db;
+    private TextToSpeech tts;
+    private Button soundBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +44,12 @@ public class TranslationActivity extends AppCompatActivity {
         Button toggleButton = findViewById(R.id.toggle);
         captions = findViewById(R.id.captions);
         Button saveHistoryBtn = findViewById(R.id.saveHistoryBtn);
+        soundBtn = findViewById(R.id.soundBtn);
 
         db = AppDatabase.getDatabase(this);
+        tts = new TextToSpeech(this, this);
+
+        soundBtn.setOnClickListener(v -> speakOut());
 
         // Initialize to default back camera
         cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
@@ -146,10 +154,33 @@ public class TranslationActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         // Ensure camera resources are released
         if (cameraProvider != null) {
             cameraProvider.unbindAll();
         }
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            int result = tts.setLanguage(Locale.US);
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e(TAG, "This Language is not supported");
+            } else {
+                soundBtn.setEnabled(true);
+            }
+        } else {
+            Log.e(TAG, "Initialization Failed!");
+        }
+    }
+
+    private void speakOut() {
+        String text = captions.getText().toString();
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "");
     }
 }
