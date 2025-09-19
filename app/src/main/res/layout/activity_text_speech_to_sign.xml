@@ -3,27 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="40dp"
-    android:background="#E6E6FA">
-
-    <ImageButton
-        android:id="@+id/roundButton"
-        android:layout_width="40dp"
-        android:layout_height="60dp"
-        android:src="@drawable/ic_home_round"
-        android:background="@drawable/round_button"
-        android:scaleType="centerInside"
-        android:padding="1dp"
-        android:contentDescription="Home"/>
-
+    android:padding="20dp">
 
     <EditText
         android:id="@+id/inputText"
         android:textColorHint="#800080"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter text here"
-        android:textColorHint="#800080" />
+        android:hint="Enter text here" />
 
     <Button
         android:backgroundTint="#800080"
@@ -31,8 +18,5 @@
         android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="🎤 Speak"
-        android:textColor="#E6E6FA"
-        android:backgroundTint="#800080"
-        />
+        android:text="🎤 Speak" />
 </LinearLayout>
