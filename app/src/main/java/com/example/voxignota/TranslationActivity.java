@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -43,14 +44,12 @@ public class TranslationActivity extends AppCompatActivity implements TextToSpee
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
-                    // Permission is granted. Continue the action or workflow in your
-                    // app.
+                    // Permission is granted. Start the camera.
+                    startCamera();
                 } else {
                     // Explain to the user that the feature is unavailable because the
-                    // features requires a permission that the user has denied. At the
-                    // same time, respect the user's decision. Don't link to system
-                    // settings in an effort to convince the user to change their
-                    // decision.
+                    // features requires a permission that the user has denied.
+                    Toast.makeText(this, "Camera permission is required for this feature.", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -58,15 +57,6 @@ public class TranslationActivity extends AppCompatActivity implements TextToSpee
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_translation);
-
-        if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.CAMERA) !=
-                PackageManager.PERMISSION_GRANTED) {
-            // You can directly ask for the permission.
-            // The registered ActivityResultCallback gets the result of this request.
-            requestPermissionLauncher.launch(
-                    Manifest.permission.CAMERA);
-        }
 
         previewView = findViewById(R.id.cameraPreview);
         Button toggleButton = findViewById(R.id.toggle);
@@ -79,31 +69,12 @@ public class TranslationActivity extends AppCompatActivity implements TextToSpee
 
         soundBtn.setOnClickListener(v -> speakOut());
 
-        // Initialize to default back camera
-        cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
-
-        // Initialize the camera preview
-        ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
-                ProcessCameraProvider.getInstance(this);
-
-        cameraProviderFuture.addListener(() -> {
-            try {
-                cameraProvider = cameraProviderFuture.get();
-                if (cameraProvider == null) {
-                    Log.e(TAG, "Camera provider is null");
-                    return;
-                }
-
-                preview = new Preview.Builder().build();
-                preview.setSurfaceProvider(previewView.getSurfaceProvider());
-
-                bindCameraUseCases();
-
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Error initializing camera provider", e);
-                e.printStackTrace();
-            }
-        }, ContextCompat.getMainExecutor(this));
+        // Check for permission and start camera if granted, or request otherwise
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            startCamera();
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+        }
 
         // Handle toggle button click
         toggleButton.setOnClickListener(v -> {
@@ -137,6 +108,34 @@ public class TranslationActivity extends AppCompatActivity implements TextToSpee
                 saveToHistory(textToSave);
             }
         });
+    }
+
+    private void startCamera() {
+        // Initialize to default back camera
+        cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+
+        // Initialize the camera preview
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
+                ProcessCameraProvider.getInstance(this);
+
+        cameraProviderFuture.addListener(() -> {
+            try {
+                cameraProvider = cameraProviderFuture.get();
+                if (cameraProvider == null) {
+                    Log.e(TAG, "Camera provider is null");
+                    return;
+                }
+
+                preview = new Preview.Builder().build();
+                preview.setSurfaceProvider(previewView.getSurfaceProvider());
+
+                bindCameraUseCases();
+
+            } catch (ExecutionException | InterruptedException e) {
+                Log.e(TAG, "Error initializing camera provider", e);
+                e.printStackTrace();
+            }
+        }, ContextCompat.getMainExecutor(this));
     }
 
     @SuppressLint("StaticFieldLeak")
