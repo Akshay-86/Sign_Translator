@@ -1,11 +1,20 @@
 package com.example.voxignota;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraInfoUnavailableException;
 import androidx.camera.core.CameraSelector;
@@ -13,16 +22,36 @@ import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
+
 import com.google.common.util.concurrent.ListenableFuture;
+
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
-public class TranslationActivity extends AppCompatActivity {
+public class TranslationActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
     private static final String TAG = "TranslationActivity";
     private PreviewView previewView;
     private ProcessCameraProvider cameraProvider;
     private CameraSelector cameraSelector;
     private Preview preview;
+    private EditText captions;
+    private AppDatabase db;
+    private TextToSpeech tts;
+    private Button soundBtn;
+
+
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // Permission is granted. Start the camera.
+                    startCamera();
+                } else {
+                    // Explain to the user that the feature is unavailable because the
+                    // features requires a permission that the user has denied.
+                    Toast.makeText(this, "Camera permission is required for this feature.", Toast.LENGTH_SHORT).show();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +60,57 @@ public class TranslationActivity extends AppCompatActivity {
 
         previewView = findViewById(R.id.cameraPreview);
         Button toggleButton = findViewById(R.id.toggle);
+        captions = findViewById(R.id.captions);
+        Button saveHistoryBtn = findViewById(R.id.saveHistoryBtn);
+        soundBtn = findViewById(R.id.soundBtn);
 
+        db = AppDatabase.getDatabase(this);
+        tts = new TextToSpeech(this, this);
+
+        soundBtn.setOnClickListener(v -> speakOut());
+
+        // Check for permission and start camera if granted, or request otherwise
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            startCamera();
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+        }
+
+        // Handle toggle button click
+        toggleButton.setOnClickListener(v -> {
+            if (cameraProvider == null) {
+                Log.e(TAG, "Camera provider not available for toggle.");
+                return;
+            }
+
+            // Toggle camera selector
+            if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
+                // Check if front camera is available
+                try {
+                    if (!cameraProvider.hasCamera(cameraSelector)) {
+                        Log.w(TAG, "Front camera is not available.");
+                        // Revert to back camera if front is not available
+                        cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+                    }
+                } catch (CameraInfoUnavailableException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+            }
+            bindCameraUseCases();
+        });
+
+        saveHistoryBtn.setOnClickListener(v -> {
+            String textToSave = captions.getText().toString();
+            if (!textToSave.isEmpty()) {
+                saveToHistory(textToSave);
+            }
+        });
+    }
+
+    private void startCamera() {
         // Initialize to default back camera
         cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
 
@@ -51,41 +130,27 @@ public class TranslationActivity extends AppCompatActivity {
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
                 bindCameraUseCases();
-                //updateToggleButtonText();
 
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error initializing camera provider", e);
                 e.printStackTrace();
             }
         }, ContextCompat.getMainExecutor(this));
+    }
 
-        // Handle toggle button click
-        toggleButton.setOnClickListener(v -> {
-            if (cameraProvider == null) {
-                Log.e(TAG, "Camera provider not available for toggle.");
-                return;
-            }
+    @SuppressLint("StaticFieldLeak")
+    private void saveToHistory(String text) {
+        HistoryItem historyItem = new HistoryItem();
+        historyItem.text = text;
+        historyItem.timestamp = System.currentTimeMillis();
 
-            // Toggle camera selector
-            if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-                cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA;
-                // Check if front camera is available
-                try {
-                    if (!cameraProvider.hasCamera(cameraSelector)) {
-                        Log.w(TAG, "Front camera is not available.");
-                        // Revert to back camera if front is not available
-                        cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
-                         // Optionally, inform the user e.g. via a Toast
-                    }
-                } catch (CameraInfoUnavailableException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                db.historyDao().insert(historyItem);
+                return null;
             }
-            bindCameraUseCases();
-            //updateToggleButtonText();
-        });
+        }.execute();
     }
 
     private void bindCameraUseCases() {
@@ -105,14 +170,6 @@ public class TranslationActivity extends AppCompatActivity {
         }
     }
 
-/*    private void updateToggleButtonText() {
-        if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-            toggleButton.setText("Switch to Front");
-        } else {
-            toggleButton.setText("Switch to Back");
-        }
-    }*/
-
     public void goHome(View v){
         // Unbind camera before leaving activity to release resources
         if (cameraProvider != null) {
@@ -124,10 +181,33 @@ public class TranslationActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         // Ensure camera resources are released
         if (cameraProvider != null) {
             cameraProvider.unbindAll();
         }
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            int result = tts.setLanguage(Locale.US);
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e(TAG, "This Language is not supported");
+            } else {
+                soundBtn.setEnabled(true);
+            }
+        } else {
+            Log.e(TAG, "Initialization Failed!");
+        }
+    }
+
+    private void speakOut() {
+        String text = captions.getText().toString();
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "");
     }
 }

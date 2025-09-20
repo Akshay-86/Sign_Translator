@@ -2,21 +2,21 @@
 plugins {
     id 'com.android.application'
 
-    
+
 }
 
 android {
     namespace 'com.example.voxignota'
     compileSdk 36
-    
+
     defaultConfig {
         applicationId "com.example.voxignota"
         minSdk 27
         targetSdk 34
         versionCode 1
         versionName "1.0"
-        
-        vectorDrawables { 
+
+        vectorDrawables {
             useSupportLibrary true
         }
     }
@@ -29,15 +29,15 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildFeatures {
         viewBinding true
-        
+
     }
-    
+
 }
 
 dependencies {
@@ -64,6 +64,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("com.google.android.material:material:1.13.0")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+
+    def room_version = "2.8.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 }
-
-
