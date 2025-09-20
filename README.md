@@ -1,4 +1,6 @@
 ﻿# Sign_Translator
 
 Just a normal app
+### Nothing_ major.. Just a group of students struggling ...
+_IDK_ yet .. just an experment...
 
