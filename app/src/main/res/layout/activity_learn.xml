@@ -1,5 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/learnList"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/learnTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Learn"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/learnTitle">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:ignore="WebViewLayout">
+
+            <!-- Getting Started Section -->
+            <RelativeLayout
+                android:id="@+id/headerGettingStarted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:padding="12dp">
+
+                <TextView
+                    android:id="@+id/titleGettingStarted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Getting Started"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"/>
+
+                <ImageView
+                    android:id="@+id/arrowGettingStarted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_down"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/contentGettingStarted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:adjustViewBounds="true"
+                android:visibility="gone"
+                android:contentDescription="Getting started image guide"/>
+
+            <!-- Advanced Section -->
+            <RelativeLayout
+                android:id="@+id/headerAdvanced"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:layout_marginTop="8dp"
+                android:padding="12dp">
+
+                <TextView
+                    android:id="@+id/titleAdvanced"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Advanced"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"/>
+
+                <ImageView
+                    android:id="@+id/arrowAdvanced"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_down"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+
+            <WebView
+                android:id="@+id/contentAdvanced"
+                android:layout_width="match_parent"
+                android:layout_height="630dp"
+                android:visibility="gone"/>
+
+            <!-- Video Links Section -->
+            <RelativeLayout
+                android:id="@+id/headerVideoLinks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:layout_marginTop="8dp"
+                android:padding="12dp">
+
+                <TextView
+                    android:id="@+id/titleVideoLinks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Video Links"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"/>
+
+                <ImageView
+                    android:id="@+id/arrowVideoLinks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_down"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+
+            <WebView
+                android:id="@+id/contentVideoLinks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:ignore="WebViewLayout" />
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
