@@ -11,11 +11,11 @@
 
     <!-- Top wave -->
     <path
-        android:fillColor="#D8BFD8"
+        android:fillColor="#D4C2EC"
         android:pathData="M0,100 C90,150 270,50 360,100 L360,0 L0,0 Z" />
 
     <!-- Bottom wave -->
     <path
-        android:fillColor="#C8A2C8"
+        android:fillColor="#C8B1E0"
         android:pathData="M0,540 C90,590 270,490 360,540 L360,640 L0,640 Z" />
 </vector>
