@@ -98,7 +98,7 @@
             <WebView
                 android:id="@+id/contentAdvanced"
                 android:layout_width="match_parent"
-                android:layout_height="630dp"
+                android:layout_height="match_parent"
                 android:visibility="gone"/>
 
             <!-- Video Links Section -->
@@ -133,7 +133,7 @@
             <WebView
                 android:id="@+id/contentVideoLinks"
                 android:layout_width="match_parent"
-                android:layout_height="630dp"
+                android:layout_height="match_parent"
                 android:visibility="gone"
                 tools:ignore="WebViewLayout" />
 
