@@ -21,7 +21,7 @@
         android:contentDescription="goHome"
         android:onClick="goHome"
         android:src="@drawable/ic_home"
-<<<<<<< HEAD
+
         android:text="←"
         android:background="@drawable/custom_button2" />
 
@@ -38,24 +38,7 @@
          android:id="@+id/captions"
          android:text="Captions here..."
          android:background="@drawable/custom_button"/>
-=======
-        tools:ignore="HardcodedText" />
 
-    <TextView
-        android:id="@+id/captions"
-        android:layout_width="250dp"
-        android:layout_height="44dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="12dp"
-        android:background="#AA000000"
-        android:hint="Captions here..."
-        android:padding="8dp"
-        android:scrollbars="vertical"
-        android:textColor="#FFFFFF"
-        tools:ignore="HardcodedText" />
->>>>>>> 37a6f74f074293d58d660a4a2930d3d9905c777c
 
     <Button
         android:id="@+id/toggle"
@@ -63,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/soundBtn"
         android:layout_alignParentEnd="true"
-<<<<<<< HEAD
+        android:layout_margin="8dp"
         android:text="🔀"
         android:background="@drawable/custom_button"/>
 
@@ -89,34 +72,6 @@
          android:id="@+id/saveHistoryBtn"
          android:text="Save"
          android:background="@drawable/custom_button"/>
-=======
-        android:layout_margin="8dp"
-        android:backgroundTint="#800080"
-        android:text="🔀"
-        tools:ignore="HardcodedText" />
-
-    <Button
-        android:id="@+id/soundBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="8dp"
-        android:backgroundTint="#800080"
-        android:text="🔊"
-        tools:ignore="HardcodedText" />
-
-    <Button
-        android:id="@+id/saveHistoryBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="8dp"
-        android:backgroundTint="#800080"
-        android:text="Save"
-        android:textColor="@color/white"
-        tools:ignore="HardcodedText" />
 
     <ProgressBar
         android:id="@+id/loading"
@@ -137,6 +92,5 @@
         android:textColor="#FFFFFF"
         android:text="FPS: 0.0"
         tools:ignore="HardcodedText" />
->>>>>>> 37a6f74f074293d58d660a4a2930d3d9905c777c
 
 </RelativeLayout>

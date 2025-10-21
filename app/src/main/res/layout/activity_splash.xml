@@ -10,7 +10,6 @@
 
 
     <ImageView
-<<<<<<< HEAD
         android:id="@+id/imageView"
         android:layout_width="410dp"
         android:layout_height="730dp"
@@ -18,11 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/logovox5" />
-=======
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/logovox"/>
->>>>>>> 37a6f74f074293d58d660a4a2930d3d9905c777c
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
