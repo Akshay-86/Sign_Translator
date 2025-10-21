@@ -6,6 +6,7 @@
     android:padding="16dp"
     android:background="#E6E6FA">
 
+
     <TextView
         android:id="@+id/learnTitle"
         android:layout_width="wrap_content"
@@ -17,6 +18,23 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="10dp"/>
+
+    <ImageButton
+        android:id="@+id/backBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/custom_button2"
+        android:backgroundTint="#800080"
+        android:contentDescription="goHome"
+        android:onClick="goHome"
+        android:src="@drawable/ic_home"
+        android:text="←" />
 
     <ScrollView
         android:layout_width="match_parent"
