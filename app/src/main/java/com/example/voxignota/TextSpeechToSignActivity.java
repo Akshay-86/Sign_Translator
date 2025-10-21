@@ -165,6 +165,11 @@ public class TextSpeechToSignActivity extends AppCompatActivity {
         }
     }
 
+    public void goHome(View v){
+        startActivity(new Intent(this, HomeActivity.class));
+        finish();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

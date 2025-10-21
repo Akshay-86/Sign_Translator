@@ -13,9 +13,13 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <ImageView
+        <ImageButton
             android:layout_width="150dp"
+            android:background="@null"
+            android:adjustViewBounds="false"
             android:layout_height="150dp"
+            android:onClick="goReport"
+            android:scaleType="centerCrop"
             android:layout_marginBottom="20dp"
             android:src="@drawable/voxlogo" />
 
