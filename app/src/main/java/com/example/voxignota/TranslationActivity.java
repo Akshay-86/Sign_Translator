@@ -88,20 +88,6 @@ public class TranslationActivity extends AppCompatActivity implements TextToSpee
                 }
             });
 
-    // TODO: 18-10-2025 implent this fuking function 
-//    public void goReport(View v) {
-//        final String url = "https://github.com/Akshay-86/Sign_Translator/issues/newv";
-//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//
-//        // Check if there's an app that can handle this intent
-//        if (intent.resolveActivity(v.getContext().getPackageManager()) != null) {
-//            v.getContext().startActivity(intent);
-//        } else {
-//            Toast.makeText(v.getContext(), "No browser found to open the link", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
