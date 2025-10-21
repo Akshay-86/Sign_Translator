@@ -100,7 +100,7 @@ public class TextSpeechToSignActivity extends AppCompatActivity {
         translateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text = inputText.getText().toString().trim().toUpperCase();
+                String text = inputText.getText().toString().trim().toLowerCase();
                 if (text.isEmpty()) {
                     Toast.makeText(TextSpeechToSignActivity.this, "Please enter text or speak.", Toast.LENGTH_SHORT).show();
                     return;
@@ -134,7 +134,7 @@ public class TextSpeechToSignActivity extends AppCompatActivity {
                         imageView.setLayoutParams(layoutParams);
 
                         try {
-                            InputStream is = getAssets().open("signs/" + character + ".jpg");
+                            InputStream is = getAssets().open("signs/" + character + ".jpeg");
                             Drawable d = Drawable.createFromStream(is, null);
                             imageView.setImageDrawable(d);
                             imageView.setPadding(5,5,5,5);
