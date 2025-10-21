@@ -2,6 +2,7 @@
 package com.example.voxignota;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -115,5 +116,10 @@ public class LearnActivity extends AppCompatActivity {
             contentVideoLinks.setVisibility(View.GONE);
             arrowVideoLinks.setImageResource(R.drawable.ic_arrow_down);
         }
+    }
+
+    public void goHome(View v){
+        startActivity(new Intent(this, HomeActivity.class));
+        finish();
     }
 }

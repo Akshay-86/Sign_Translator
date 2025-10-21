@@ -13,10 +13,11 @@
         android:id="@+id/imageView"
         android:layout_width="410dp"
         android:layout_height="730dp"
-        android:src="@drawable/logovox5"
+        android:scaleType="centerCrop"
+        android:src="@drawable/logovox"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/logovox5" />
+        tools:srcCompat="@drawable/logovox" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
