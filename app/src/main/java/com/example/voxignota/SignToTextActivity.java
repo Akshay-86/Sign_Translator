@@ -1,12 +1,10 @@
 package com.example.voxignota;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
@@ -43,7 +41,6 @@ import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -51,9 +48,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class TranslationActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
+public class SignToTextActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
-    private static final String TAG = "TranslationActivity";
+    private static final String TAG = "SignToTextActivity";
     private PreviewView previewView;
     private ProcessCameraProvider cameraProvider;
     private CameraSelector cameraSelector;
@@ -91,21 +88,21 @@ public class TranslationActivity extends AppCompatActivity implements TextToSpee
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_translation);
+        setContentView(R.layout.activity_signtotext);
 
         previewView = findViewById(R.id.cameraPreview);
         Button toggleButton = findViewById(R.id.toggle);
         captions = findViewById(R.id.captions);
         captions.setMovementMethod(new ScrollingMovementMethod());
         Button saveHistoryBtn = findViewById(R.id.saveHistoryBtn);
-        soundBtn = findViewById(R.id.soundBtn);
+ //       soundBtn = findViewById(R.id.soundBtn);
         loadingIndicator = findViewById(R.id.loading);
         fpsCounter = findViewById(R.id.fpsCounter);
 
         db = AppDatabase.getDatabase(this);
         tts = new TextToSpeech(this, this);
 
-        soundBtn.setOnClickListener(v -> speakOut());
+//        soundBtn.setOnClickListener(v -> speakOut());
 
         // Check for permission and start camera if granted, or request otherwise
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
@@ -175,7 +172,7 @@ public class TranslationActivity extends AppCompatActivity implements TextToSpee
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build();
 
-                imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(TranslationActivity.this), this::analyzeImage);
+                imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(SignToTextActivity.this), this::analyzeImage);
 
                 bindCameraUseCases();
 
@@ -222,7 +219,7 @@ public class TranslationActivity extends AppCompatActivity implements TextToSpee
         try {
             cameraProvider.unbindAll(); // Unbind existing use cases
             cameraProvider.bindToLifecycle(
-                    TranslationActivity.this,
+                    SignToTextActivity.this,
                     cameraSelector,
                     preview,
                     imageAnalysis
@@ -262,7 +259,7 @@ public class TranslationActivity extends AppCompatActivity implements TextToSpee
 
     @Override
     public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
+/*        if (status == TextToSpeech.SUCCESS) {
             int result = tts.setLanguage(Locale.US);
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e(TAG, "This Language is not supported");
@@ -271,13 +268,15 @@ public class TranslationActivity extends AppCompatActivity implements TextToSpee
             }
         } else {
             Log.e(TAG, "Initialization Failed!");
-        }
+        }*/
     }
 
+/*
     private void speakOut() {
         String text = captions.getText().toString();
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "");
     }
+*/
 
     // Load model file from assets into a MappedByteBuffer
     private MappedByteBuffer loadModelFile(String filename) throws IOException {

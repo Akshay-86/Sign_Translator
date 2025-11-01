@@ -17,10 +17,10 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         findViewById(R.id.signToTextBtn).setOnClickListener(v ->
-                startActivity(new Intent(HomeActivity.this, TranslationActivity.class)));
+                startActivity(new Intent(HomeActivity.this, SignToTextActivity.class)));
 
         findViewById(R.id.signToSpeechBtn).setOnClickListener(v ->
-                startActivity(new Intent(HomeActivity.this, TranslationActivity.class)));
+                startActivity(new Intent(HomeActivity.this, SignToSpeechActivity.class)));
 
         findViewById(R.id.textToSignBtn).setOnClickListener(v ->
                 startActivity(new Intent(HomeActivity.this, TextSpeechToSignActivity.class)));

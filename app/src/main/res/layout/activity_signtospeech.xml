@@ -26,18 +26,19 @@
         android:background="@drawable/custom_button2" />
 
 
-    <EditText
-         android:layout_height="44dp"
-         android:layout_width="250dp"
-         android:padding="8dp"
-         android:layout_margin="8dp"
-         android:backgroundTint="#D4C2EC"
-         android:layout_marginBottom="12dp"
-         android:textColor="#800080"
-         android:layout_alignParentBottom="true"
-         android:id="@+id/captions"
-         android:text="Captions here..."
-         android:background="@drawable/custom_button"/>
+    <TextView
+        android:layout_height="44dp"
+        android:layout_width="250dp"
+        android:padding="11dp"
+        android:textSize="15sp"
+        android:layout_margin="8dp"
+        android:backgroundTint="#D4C2EC"
+        android:layout_marginBottom="12dp"
+        android:textColorHint="#800080"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/captions"
+        android:hint="Captions here..."
+        android:background="@drawable/custom_button"/>
 
 
     <Button
@@ -51,27 +52,27 @@
         android:background="@drawable/custom_button"/>
 
     <Button
-         android:layout_height="wrap_content"
-         android:layout_width="wrap_content"
-         android:layout_margin="8dp"
-         android:backgroundTint="#800080"
-         android:layout_alignParentEnd="true"
-         android:layout_alignParentBottom="true"
-         android:id="@+id/soundBtn"
-         android:text="🔊"
-         android:background="@drawable/custom_button"/>
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_margin="8dp"
+        android:backgroundTint="#800080"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/soundBtn"
+        android:text="🔊"
+        android:background="@drawable/custom_button"/>
 
     <Button
-         android:layout_height="wrap_content"
-         android:layout_width="wrap_content"
-         android:layout_margin="8dp"
-         android:backgroundTint="#D4C2EC"
-         android:textColor="#800080"
-         android:layout_alignParentEnd="true"
-         android:layout_alignParentTop="true"
-         android:id="@+id/saveHistoryBtn"
-         android:text="Save"
-         android:background="@drawable/custom_button"/>
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_margin="8dp"
+        android:backgroundTint="#D4C2EC"
+        android:textColor="#800080"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:id="@+id/saveHistoryBtn"
+        android:text="Save"
+        android:background="@drawable/custom_button"/>
 
     <ProgressBar
         android:id="@+id/loading"
