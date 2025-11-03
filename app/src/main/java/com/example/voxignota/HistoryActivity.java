@@ -1,8 +1,10 @@
 package com.example.voxignota;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -66,5 +68,10 @@ public class HistoryActivity extends AppCompatActivity {
             Objects.requireNonNull(grouped.get(date)).add(item);
         }
         return grouped;
+    }
+
+    public void goHome(View v){
+        startActivity(new Intent(this, HomeActivity.class));
+        finish();
     }
 }

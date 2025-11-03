@@ -10,6 +10,13 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/voxlogo"
@@ -23,8 +30,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".HomeActivity"  android:launchMode="singleTask"/>
-        <activity android:name=".TranslationActivity"/>
-        <activity android:name=".TextSpeechToSignActivity"/>
+        <activity android:name=".SignToTextActivity"/>
+        <activity android:name=".SignToSpeechActivity"/>
+        <activity android:name=".TextToSignActivity"/>
+        <activity android:name=".SpeechToSignActivity"/>
         <activity android:name=".LearnActivity"/>
         <activity android:name=".HistoryActivity"/>
     </application>
