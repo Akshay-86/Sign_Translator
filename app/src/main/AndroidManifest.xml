@@ -32,7 +32,8 @@
         <activity android:name=".HomeActivity"  android:launchMode="singleTask"/>
         <activity android:name=".SignToTextActivity"/>
         <activity android:name=".SignToSpeechActivity"/>
-        <activity android:name=".TextSpeechToSignActivity"/>
+        <activity android:name=".TextToSignActivity"/>
+        <activity android:name=".SpeechToSignActivity"/>
         <activity android:name=".LearnActivity"/>
         <activity android:name=".HistoryActivity"/>
     </application>

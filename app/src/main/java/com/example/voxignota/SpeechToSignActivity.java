@@ -29,7 +29,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class TextSpeechToSignActivity extends AppCompatActivity {
+public class SpeechToSignActivity extends AppCompatActivity {
 
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private EditText inputText;
@@ -40,7 +40,7 @@ public class TextSpeechToSignActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_text_speech_to_sign);
+        setContentView(R.layout.activity_speechtosign);
 
         inputText = findViewById(R.id.inputText);
         micBtn = findViewById(R.id.micBtn);
@@ -89,8 +89,8 @@ public class TextSpeechToSignActivity extends AppCompatActivity {
         micBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(TextSpeechToSignActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(TextSpeechToSignActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO_PERMISSION);
+                if (ContextCompat.checkSelfPermission(SpeechToSignActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(SpeechToSignActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO_PERMISSION);
                 } else {
                     speechRecognizer.startListening(speechRecognizerIntent);
                 }
@@ -102,7 +102,7 @@ public class TextSpeechToSignActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String text = inputText.getText().toString().trim().toLowerCase();
                 if (text.isEmpty()) {
-                    Toast.makeText(TextSpeechToSignActivity.this, "Please enter text or speak.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SpeechToSignActivity.this, "Please enter text or speak.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -111,20 +111,20 @@ public class TextSpeechToSignActivity extends AppCompatActivity {
 
                 for (String word : words) {
                     // --- START OF THE CHANGE ---
-                    HorizontalScrollView horizontalScrollView = new HorizontalScrollView(TextSpeechToSignActivity.this);
+                    HorizontalScrollView horizontalScrollView = new HorizontalScrollView(SpeechToSignActivity.this);
                     LinearLayout.LayoutParams scrollParams = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
                     );
                     horizontalScrollView.setLayoutParams(scrollParams);
 
-                    LinearLayout wordLayout = new LinearLayout(TextSpeechToSignActivity.this);
+                    LinearLayout wordLayout = new LinearLayout(SpeechToSignActivity.this);
                     wordLayout.setOrientation(LinearLayout.HORIZONTAL);
                     wordLayout.setPadding(0, 0, 10, 10);
                     // --- END OF THE CHANGE ---
 
                     for (char character : word.toCharArray()) {
-                        ImageView imageView = new ImageView(TextSpeechToSignActivity.this);
+                        ImageView imageView = new ImageView(SpeechToSignActivity.this);
 
                         float density = getResources().getDisplayMetrics().density;
                         int sizeInDp = 60;
@@ -141,7 +141,7 @@ public class TextSpeechToSignActivity extends AppCompatActivity {
                             wordLayout.addView(imageView);
                         } catch (IOException e) {
                             e.printStackTrace();
-                            Toast.makeText(TextSpeechToSignActivity.this, "Error loading image for: " + character, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SpeechToSignActivity.this, "Error loading image for: " + character, Toast.LENGTH_SHORT).show();
                         }
                     }
                     // --- START OF THE CHANGE ---

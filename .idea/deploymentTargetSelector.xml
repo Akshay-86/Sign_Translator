@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="VoxIgnota">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-11-01T16:26:11.155974800Z">
+        <DropdownSelection timestamp="2025-11-03T12:58:56.718089600Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=SG49QGZP9X75EUTK" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Its Mine\.android\avd\Medium_Phone.avd" />
             </handle>
           </Target>
         </DropdownSelection>

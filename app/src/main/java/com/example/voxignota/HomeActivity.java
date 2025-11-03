@@ -3,7 +3,6 @@ package com.example.voxignota;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.Toast;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,10 +22,10 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(new Intent(HomeActivity.this, SignToSpeechActivity.class)));
 
         findViewById(R.id.textToSignBtn).setOnClickListener(v ->
-                startActivity(new Intent(HomeActivity.this, TextSpeechToSignActivity.class)));
+                startActivity(new Intent(HomeActivity.this, TextToSignActivity.class)));
 
         findViewById(R.id.speechToSignBtn).setOnClickListener(v ->
-                startActivity(new Intent(HomeActivity.this, TextSpeechToSignActivity.class)));
+                startActivity(new Intent(HomeActivity.this, SpeechToSignActivity.class)));
 
         findViewById(R.id.learnBtn).setOnClickListener(v ->
                 startActivity(new Intent(HomeActivity.this, LearnActivity.class)));
