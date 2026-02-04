@@ -14,6 +14,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "VoxIgnota "
+rootProject.name = "VoxIgnota"
 
 include(":app")

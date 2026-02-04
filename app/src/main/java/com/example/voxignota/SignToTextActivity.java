@@ -41,6 +41,9 @@ import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
@@ -57,6 +60,7 @@ public class SignToTextActivity extends AppCompatActivity implements TextToSpeec
     private Preview preview;
     private ImageAnalysis imageAnalysis;
     private TextView captions;
+    private TextView predictionSummary;
     private AppDatabase db;
     private TextToSpeech tts;
     private Button soundBtn;
@@ -67,10 +71,23 @@ public class SignToTextActivity extends AppCompatActivity implements TextToSpeec
     private ProgressBar loadingIndicator;
     private TextView fpsCounter;
     private long lastFrameTime = 0;
+    private long lastAppendTime = 0;
+    private int lastPredictedIndex = -1;
+    private int stableCount = 0;
+    private static final long MIN_APPEND_INTERVAL_MS = 1200;
+    private static final int STABLE_FRAMES_REQUIRED = 2;
+    private static final int RECENT_TOP3_LIMIT = 3;
+    private final Deque<int[]> recentTop3 = new ArrayDeque<>();
 
     private ByteBuffer inputBuffer;
     private ByteBuffer outputBuffer;
+    private final ExecutorService cameraExecutor = Executors.newSingleThreadExecutor();
 
+    private static final List<String> FALLBACK_LABELS = Arrays.asList(
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J",
+            "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T",
+            "U", "V", "W", "X", "Y", "Z", "del", "nothing", "space"
+    );
 
 
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -94,6 +111,7 @@ public class SignToTextActivity extends AppCompatActivity implements TextToSpeec
         Button toggleButton = findViewById(R.id.toggle);
         captions = findViewById(R.id.captions);
         captions.setMovementMethod(new ScrollingMovementMethod());
+        predictionSummary = findViewById(R.id.predictionSummary);
         Button saveHistoryBtn = findViewById(R.id.saveHistoryBtn);
  //       soundBtn = findViewById(R.id.soundBtn);
         loadingIndicator = findViewById(R.id.loading);
@@ -172,7 +190,7 @@ public class SignToTextActivity extends AppCompatActivity implements TextToSpeec
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                         .build();
 
-                imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(SignToTextActivity.this), this::analyzeImage);
+                imageAnalysis.setAnalyzer(cameraExecutor, this::analyzeImage);
 
                 bindCameraUseCases();
 
@@ -193,6 +211,9 @@ public class SignToTextActivity extends AppCompatActivity implements TextToSpeec
 
                 // Load labels
                 labels = loadLabels("labels.txt");
+                if (labels == null || labels.isEmpty()) {
+                    labels = new ArrayList<>(FALLBACK_LABELS);
+                }
                 loadingIndicator.setVisibility(View.GONE);
 
             } catch (ExecutionException | InterruptedException | IOException e) {
@@ -253,6 +274,9 @@ public class SignToTextActivity extends AppCompatActivity implements TextToSpeec
         }
         if (executorService != null && !executorService.isShutdown()) {
             executorService.shutdown();
+        }
+        if (cameraExecutor != null && !cameraExecutor.isShutdown()) {
+            cameraExecutor.shutdown();
         }
         super.onDestroy();
     }
@@ -316,11 +340,10 @@ public class SignToTextActivity extends AppCompatActivity implements TextToSpeec
     }
 
 
-    // Run inference and return predicted class index
-    private int runInference(Bitmap bmp) {
+    private PredictionResult runInference(Bitmap bmp) {
         if (tflite == null || inputBuffer == null || outputBuffer == null) {
             Log.e(TAG, "TFLite Interpreter or buffers not initialized.");
-            return -1;
+            return null;
         }
         preprocessBitmap(bmp, inputBuffer);
 
@@ -329,20 +352,20 @@ public class SignToTextActivity extends AppCompatActivity implements TextToSpeec
             tflite.run(inputBuffer, outputBuffer);
         } catch (Exception e) {
             Log.e(TAG, "TFLite run error", e);
-            return -1;
+            return null;
         }
-        // argmax
+        if (labels == null || labels.isEmpty()) {
+            return null;
+        }
+
         outputBuffer.rewind();
-        int argmax = 0;
-        float max = outputBuffer.getFloat();
-        for (int i = 1; i < labels.size(); i++) {
-            float current = outputBuffer.getFloat();
-            if (current > max) {
-                max = current;
-                argmax = i;
-            }
+        float[] probs = new float[labels.size()];
+        for (int i = 0; i < labels.size(); i++) {
+            probs[i] = outputBuffer.getFloat();
         }
-        return argmax;
+        int argmax = getTopIndex(probs);
+        int[] top3 = getTopIndices(probs, 3);
+        return new PredictionResult(argmax, top3);
     }
 
     // Throttled analyzer: runs inference at most ~2 times per second and appends stable predictions
@@ -377,24 +400,163 @@ public class SignToTextActivity extends AppCompatActivity implements TextToSpeec
         int top = (h - size) / 2;
         Bitmap crop = Bitmap.createBitmap(bmp, left, top, size, size);
 
-        int pred = runInference(crop);
-        if (pred >= 0 && pred < labels.size()) {
-            String ch = labels.get(pred);
-            runOnUiThread(() -> {
-                String cur = captions.getText().toString();
-                // Simple append behavior - avoid adding placeholders
-                if (!"nothing".equals(ch) && !"space".equals(ch) && !"del".equals(ch)) {
-                    captions.setText(new StringBuilder(cur).append(ch).toString());
-                } else if ("space".equals(ch)) {
-                    captions.setText(new StringBuilder(cur).append(" ").toString());
-                } else if ("del".equals(ch)) {
-                    if (cur.length() > 0) {
-                        captions.setText(cur.substring(0, cur.length() - 1));
-                    }
-                }
-            });
+        PredictionResult result = runInference(crop);
+        if (result != null && result.topIndex >= 0 && result.topIndex < labels.size()) {
+            String ch = labels.get(result.topIndex);
+            updateRecentTop3(result.topIndices);
+            runOnUiThread(() -> updatePredictionSummary(result.topIndices));
+
+            if (result.topIndex == lastPredictedIndex) {
+                stableCount++;
+            } else {
+                lastPredictedIndex = result.topIndex;
+                stableCount = 1;
+            }
+
+            if (stableCount >= STABLE_FRAMES_REQUIRED
+                    && now - lastAppendTime >= MIN_APPEND_INTERVAL_MS) {
+                runOnUiThread(() -> appendCharacter(ch));
+                lastAppendTime = now;
+                stableCount = 0;
+            }
         }
 
         image.close();
+    }
+
+    private void appendCharacter(String ch) {
+        String cur = captions.getText().toString();
+        if (!"nothing".equals(ch) && !"space".equals(ch) && !"del".equals(ch)) {
+            captions.setText(new StringBuilder(cur).append(ch).toString());
+        } else if ("space".equals(ch)) {
+            captions.setText(new StringBuilder(cur).append(" ").toString());
+        } else if ("del".equals(ch)) {
+            if (!cur.isEmpty()) {
+                captions.setText(cur.substring(0, cur.length() - 1));
+            }
+        }
+    }
+
+    private void updateRecentTop3(int[] top3) {
+        if (top3 == null) {
+            return;
+        }
+        if (recentTop3.size() == RECENT_TOP3_LIMIT) {
+            recentTop3.removeFirst();
+        }
+        recentTop3.addLast(top3);
+    }
+
+    private void updatePredictionSummary(int[] top3) {
+        if (predictionSummary == null || labels == null || labels.isEmpty() || top3 == null) {
+            return;
+        }
+        StringBuilder top3Text = new StringBuilder();
+        for (int i = 0; i < top3.length; i++) {
+            if (i > 0) {
+                top3Text.append(", ");
+            }
+            int index = top3[i];
+            if (index >= 0 && index < labels.size()) {
+                top3Text.append(labels.get(index));
+            } else {
+                top3Text.append("-");
+            }
+        }
+        String suggestion = buildSuggestedWord();
+        predictionSummary.setText("Top 3: " + top3Text + " · Suggested: " + suggestion);
+    }
+
+    private String buildSuggestedWord() {
+        if (recentTop3.size() < RECENT_TOP3_LIMIT || labels == null || labels.isEmpty()) {
+            return "-";
+        }
+        String[] candidates = {
+                "the", "and", "you", "are", "for", "not", "was", "his", "her",
+                "she", "him", "who", "how", "our", "out", "too", "see", "use",
+                "can", "get", "did", "man", "new", "now", "day", "say"
+        };
+
+        int bestScore = 0;
+        String bestWord = "-";
+        int position = 0;
+        for (String word : candidates) {
+            if (word.length() != RECENT_TOP3_LIMIT) {
+                continue;
+            }
+            int score = 0;
+            position = 0;
+            for (int[] top3 : recentTop3) {
+                char expected = word.charAt(position);
+                score += scoreForTop3(top3, expected);
+                position++;
+            }
+            if (score > bestScore) {
+                bestScore = score;
+                bestWord = word.toUpperCase(Locale.US);
+            }
+        }
+        return bestWord;
+    }
+
+    private int scoreForTop3(int[] top3, char expected) {
+        if (top3 == null || labels == null) {
+            return 0;
+        }
+        String expectedLabel = String.valueOf(expected).toLowerCase(Locale.US);
+        for (int i = 0; i < top3.length; i++) {
+            int idx = top3[i];
+            if (idx >= 0 && idx < labels.size()) {
+                String label = labels.get(idx).toLowerCase(Locale.US);
+                if (label.equals(expectedLabel)) {
+                    return 3 - i;
+                }
+            }
+        }
+        return 0;
+    }
+
+    private int getTopIndex(float[] probs) {
+        int argmax = 0;
+        float max = probs[0];
+        for (int i = 1; i < probs.length; i++) {
+            if (probs[i] > max) {
+                max = probs[i];
+                argmax = i;
+            }
+        }
+        return argmax;
+    }
+
+    private int[] getTopIndices(float[] probs, int k) {
+        int[] indices = new int[Math.min(k, probs.length)];
+        Arrays.fill(indices, -1);
+        float[] topScores = new float[indices.length];
+        Arrays.fill(topScores, Float.NEGATIVE_INFINITY);
+        for (int i = 0; i < probs.length; i++) {
+            float score = probs[i];
+            for (int j = 0; j < indices.length; j++) {
+                if (score > topScores[j]) {
+                    for (int shift = indices.length - 1; shift > j; shift--) {
+                        topScores[shift] = topScores[shift - 1];
+                        indices[shift] = indices[shift - 1];
+                    }
+                    topScores[j] = score;
+                    indices[j] = i;
+                    break;
+                }
+            }
+        }
+        return indices;
+    }
+
+    private static class PredictionResult {
+        private final int topIndex;
+        private final int[] topIndices;
+
+        private PredictionResult(int topIndex, int[] topIndices) {
+            this.topIndex = topIndex;
+            this.topIndices = topIndices;
+        }
     }
 }
